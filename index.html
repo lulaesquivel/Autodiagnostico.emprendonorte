@@ -1,500 +1,416 @@
 <!DOCTYPE html>
-<html lang="es-AR">
+<html lang="es">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Emprendo Norte — Autodiagnóstico</title>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root{--papel:#f7f5f2;--duro:#a85c3f;--blando:#6e7350;--tinta:#2b2b2b;--casco:#F2B441}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--papel);color:var(--tinta);
-    font-family:'IBM Plex Sans',system-ui,sans-serif}
-  .wrap{max-width:640px;margin:0 auto;padding:22px 16px 50px}
-  .logo{display:block;width:clamp(140px,32vw,168px);height:auto;margin:0 auto 22px}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autodiagnóstico de Negocio</title>
+  <style>
+    :root {
+      --bg: #FAF8F5;
+      --text: #2C2C2C;
+      --terracota: #C17B4E;
+      --terracota-light: #E8D5C8;
+      --duro: #4A6B82;
+      --blando: #C17B4E;
+      --card-bg: #FFFFFF;
+      --border: #E5E0D8;
+    }
 
-  /* ── pantallas ── */
-  .pantalla{display:none}
-  .pantalla.on{display:block}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* ── intro ── */
-  #intro{text-align:center}
-  #intro .eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
-    color:#8a8078;font-weight:600;margin:0 0 8px}
-  #intro h1{font-family:'Archivo Black',sans-serif;font-weight:400;
-    font-size:clamp(24px,7vw,32px);line-height:1.08;margin:0 0 14px}
-  #intro p{font-size:15px;line-height:1.55;color:#514c46;max-width:42ch;margin:0 auto 28px}
-  .btn-grande{display:inline-flex;align-items:center;gap:10px;cursor:pointer;
-    background:var(--tinta);color:#f7f5f2;border:none;border-radius:3px;
-    padding:16px 30px;font-family:'IBM Plex Sans',sans-serif;font-size:15px;font-weight:600;
-    letter-spacing:.02em}
-  .btn-grande:hover{background:#454038}
-  #intro .aviso{margin-top:20px;font-size:12.5px;color:#8a8078}
+    body {
+      font-family: 'Georgia', serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-  /* ── preguntas ── */
-  .progreso-wrap{display:flex;align-items:center;gap:12px;margin-bottom:22px}
-  .progreso-num{font-family:'Archivo Black',sans-serif;font-size:13px;flex:0 0 auto;color:#8a8078}
-  .progreso{flex:1;height:5px;background:#e4ded4;border-radius:3px;overflow:hidden}
-  .progreso i{display:block;height:100%;background:var(--duro);transition:width .4s ease}
-  .pregunta .grupo{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
-    font-weight:600;margin:0 0 8px}
-  .pregunta .grupo.duro{color:var(--duro)}
-  .pregunta .grupo.blando{color:var(--blando)}
-  .pregunta h2{font-family:'Archivo Black',sans-serif;font-weight:400;
-    font-size:clamp(21px,6vw,26px);line-height:1.14;margin:0 0 22px}
-  .opciones{display:flex;flex-direction:column;gap:10px}
-  .opcion{text-align:left;cursor:pointer;background:#fff;border:1.5px solid #e4ded6;
-    border-radius:4px;padding:15px 16px;font-family:inherit;font-size:14.5px;line-height:1.42;
-    color:var(--tinta);display:flex;gap:12px;align-items:flex-start;transition:border-color .15s,transform .1s}
-  .opcion:hover{border-color:#b8ada0}
-  .opcion:active{transform:scale(.99)}
-  .opcion .bola{flex:0 0 22px;width:22px;height:22px;border-radius:50%;border:2px solid #c9c1b4;
-    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
-    color:#8a8078;margin-top:1px}
-  .nav{display:flex;justify-content:space-between;margin-top:22px}
-  .nav button{cursor:pointer;background:none;border:none;font-family:inherit;
-    font-size:13px;color:#8a8078;font-weight:600;padding:8px}
-  .nav button:disabled{opacity:.35;cursor:default}
+    .container {
+      width: 100%;
+      max-width: 680px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 40px;
+      border-radius: 4px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
 
-  /* ── resultado ── */
-  #resultado .eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
-    color:#8a8078;font-weight:600;margin:0 0 6px;text-align:center}
-  #resultado h1{font-family:'Archivo Black',sans-serif;font-weight:400;
-    font-size:clamp(22px,6vw,30px);line-height:1.06;margin:0 0 18px;text-align:center}
-  .escena{background:#BBD6E8;border-radius:4px;overflow:hidden;
-    box-shadow:0 14px 34px -20px #2b2b2b66}
-  svg{display:block;width:100%;height:auto}
-  .perfil{margin-top:20px;background:#fff;border:1px solid #e4ded6;border-radius:4px;padding:20px}
-  .perfil .et{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
-    color:#8a8078;font-weight:600;margin:0 0 7px}
-  .perfil h2{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:24px;
-    margin:0 0 14px;line-height:1.1}
-  .perfil h3{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
-    color:#8a8078;margin:0 0 9px;font-weight:600}
-  .perfil ul{margin:0;padding-left:19px}
-  .perfil li{margin-bottom:6px;font-size:15px;line-height:1.45}
-  .rehacer{display:block;margin:22px auto 0;background:none;border:none;cursor:pointer;
-    font-family:inherit;font-size:13px;color:#8a8078;font-weight:600;text-decoration:underline}
-  .captura{margin:16px 0 0;font-size:12.5px;color:#8a8078;text-align:center}
+    .pantalla {
+      display: none;
+    }
 
-  @keyframes viajeTel{from{transform:translate(30px,116px)}to{transform:translate(1010px,44px)}}
-  .cabinaTel{animation:viajeTel 58s linear infinite;transform-box:view-box}
-  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
-</style>
+    .pantalla.on {
+      display: block;
+    }
+
+    h1, h2 {
+      font-weight: normal;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: var(--text);
+    }
+
+    p {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 24px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--terracota);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #A6643B;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .btn-sec {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      margin-right: 10px;
+    }
+
+    .btn-sec:hover {
+      background: #F0EDE6;
+    }
+
+    .progreso-bar {
+      height: 4px;
+      background: var(--border);
+      width: 100%;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .progreso-fill {
+      height: 100%;
+      background: var(--terracota);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progreso-num {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .grupo {
+      display: inline-block;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 8px;
+      border-radius: 2px;
+      margin-bottom: 12px;
+    }
+
+    .grupo.duro {
+      background: #EBF2F7;
+      color: var(--duro);
+    }
+
+    .grupo.blando {
+      background: var(--terracota-light);
+      color: var(--terracota);
+    }
+
+    .opcion {
+      width: 100%;
+      text-align: left;
+      background: #FAF8F5;
+      border: 1px solid var(--border);
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .opcion:hover {
+      border-color: var(--terracota);
+      background: #fff;
+    }
+
+    .bola {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid #CCC;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      background: #FAF8F5;
+      border: 1px solid var(--border);
+      margin-bottom: 24px;
+    }
+
+    .nav-btns {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- ═══════════ INTRO ═══════════ -->
-  <section class="pantalla on" id="intro">
-    <svg class="logo" viewBox="0 0 215 69" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Emprendo Norte">
+<div class="container">
+  <!-- INTRO -->
+  <div id="pantallaIntro" class="pantalla on">
+    <h1>Autodiagnóstico de Negocio</h1>
+    <p>Evaluá el estado actual de tu proyecto identificando tanto los elementos de estructura dura (operaciones, finanzas, procesos) como blanda (identidad, comunicación, cultura).</p>
+    <button id="btnEmpezar" class="btn">Comenzar Evaluación</button>
+  </div>
 
-<path d="M6.06607 7.55846C6.09805 7.45947 6.12533 7.30109 6.19704 7.2689C6.65928 7.06137 7.65897 7.04432 8.18121 7.04346C13.4551 7.03481 18.7349 6.99863 24.0081 7.01989C25.7292 7.02683 27.42 7.12582 29.1611 7.12296L49.1066 7.10122C52.0244 7.09643 55.2557 6.82745 58.1534 7.18655C58.3119 7.20619 58.6158 7.64312 58.6897 7.8186C58.7635 9.45316 58.7823 11.7302 58.7206 13.3722C58.7967 16.9759 58.7428 20.674 58.7482 24.2903L58.7369 47.2268L58.7392 55.4748C58.7401 56.7084 58.8358 59.5443 58.5847 60.5418C58.5066 60.6134 58.4247 60.7006 58.3307 60.7433C57.8856 60.865 53.112 60.8149 52.3486 60.8122L37.046 60.7619L16.5883 60.7896C14.046 60.7853 8.65495 60.9032 6.36512 60.6143C6.17554 60.318 5.96588 59.6912 5.97278 59.3517C6.04453 55.8198 6.03036 52.2803 6.02317 48.7483L5.97414 22.658L5.95992 12.7792C5.9564 11.7413 5.8799 8.37717 6.06607 7.55846ZM32.0843 41.8566C32.6923 42.0615 33.0108 42.3411 33.5499 42.5731C35.1409 43.258 36.6996 43.9496 38.2253 44.773C38.4501 44.8944 38.8216 44.9546 39.0699 45.03C40.2551 45.2487 41.139 46.0444 42.1864 46.555C42.7763 46.8274 43.5671 46.9564 44.1407 47.2295C45.4244 47.8405 46.7753 48.3667 48.0594 48.9557C49.8501 49.777 50.7795 50.5511 52.8166 50.8647C51.941 48.7655 48.9973 44.3185 47.7732 42.2372C44.1829 36.0113 40.5362 29.8182 36.8335 23.6584C35.8789 22.0846 34.9387 20.4731 33.9703 18.9058C33.632 18.3582 32.7608 16.1239 32.3481 15.8696C32.02 16.8675 31.4501 16.5788 31.0007 17.4231C28.2469 22.5981 25.2146 27.6528 22.1727 32.6638C21.4166 33.9091 20.745 35.0606 20.0802 36.3597C21.1913 37.339 30.2346 41.2095 32.0843 41.8566ZM11.9481 50.004C11.9488 50.4769 11.9349 50.5619 12.3306 50.8007C13.5691 50.9557 15.4349 49.2947 16.835 48.9038C17.4337 48.7178 18.0908 48.3826 18.6635 48.11C20.8286 47.0795 23.0632 46.1659 25.2358 45.1598C26.2415 44.694 28.8558 43.8386 29.514 43.0053C29.5302 42.8988 29.5703 42.729 29.4698 42.6783C26.9232 41.391 21.3484 39.1547 19.155 37.9253C16.8828 40.8654 15.5355 44.5552 13.2421 47.5547C12.771 48.1708 12.3888 49.3195 11.9481 50.004Z" fill="#E1332D"/>
-<path d="M6.06641 7.55846C6.09839 7.45947 6.12566 7.30109 6.19737 7.2689C6.65962 7.06137 7.6593 7.04432 8.18154 7.04346C13.4554 7.03481 18.7352 6.99863 24.0084 7.01989C25.7296 7.02683 27.4203 7.12582 29.1615 7.12296L49.1069 7.10122C52.0247 7.09643 55.256 6.82745 58.1537 7.18655C58.3122 7.20619 58.6162 7.64312 58.69 7.8186C57.6142 7.93689 55.7348 7.87941 54.599 7.89342L46.1855 7.94112C39.8165 7.91988 33.3503 8.02147 26.9916 7.95118C25.687 7.79137 22.5498 7.86375 21.128 7.86259L10.0927 7.86104C9.51628 7.86234 6.48639 7.92697 6.14583 7.81995L6.06641 7.55846Z" fill="#E1332D"/>
-<path d="M58.3309 60.7441L58.1845 60.5827C58.0594 59.8057 58.0718 56.8611 58.061 55.9224C58.0459 51.8083 58.0545 47.6941 58.0868 43.5802L58.0093 19.7702C58.0215 16.6455 57.9828 13.5415 58.3346 10.4401C58.4149 9.73225 58.2464 8.95902 58.4024 8.16602L58.481 8.35466L58.4652 8.18991C58.5373 9.76947 58.5522 11.851 58.7209 13.3729C58.7969 16.9767 58.743 20.6748 58.7484 24.2911L58.7371 47.2276L58.7394 55.4755C58.7404 56.7091 58.836 59.5451 58.5849 60.5426C58.5068 60.6141 58.425 60.7014 58.3309 60.7441Z" fill="#E1332D"/>
-<path d="M6.06607 7.55859L6.1455 7.82009C6.48606 7.9271 9.51594 7.86248 10.0924 7.86118L21.1277 7.86273C22.5495 7.86388 25.6866 7.79151 26.9913 7.95132C24.6943 8.03041 22.1224 7.97473 19.8072 7.97144L6.41817 7.96481L6.38569 45.1956L6.39529 55.2789C6.40127 56.5677 6.48927 59.4867 6.36512 60.6144C6.17554 60.3181 5.96588 59.6913 5.97278 59.3518C6.04453 55.8199 6.03036 52.2804 6.02317 48.7484L5.97414 22.6582L5.95992 12.7793C5.9564 11.7415 5.8799 8.3773 6.06607 7.55859Z" fill="#E1332D"/>
-<path d="M52.8169 50.8655C53.0773 51.0439 53.5469 51.8682 53.3316 52.1954C50.9475 52.0661 40.8483 46.8958 38.1419 45.6731L33.2302 43.4577C32.3956 43.081 32.1486 43.1156 31.2114 42.5897C31.7044 42.4231 37.2036 45.5791 37.867 45.0686L37.8373 44.8895C36.3246 43.7625 34.5029 43.4112 32.9044 42.4549C32.6442 42.2993 32.2429 42.128 31.9654 41.9947L32.0846 41.8574C32.6926 42.0623 33.0111 42.3419 33.5502 42.5739C35.1412 43.2588 36.6999 43.9504 38.2256 44.7739C38.4504 44.8952 38.8219 44.9554 39.0702 45.0308C40.2554 45.2495 41.1393 46.0452 42.1867 46.5558C42.7766 46.8283 43.5674 46.9572 44.141 47.2303C45.4247 47.8413 46.7755 48.3675 48.0597 48.9566C49.8504 49.7778 50.7798 50.5519 52.8169 50.8655Z" fill="#E1332D"/>
-<path d="M11.9481 50.0045C11.9488 50.4774 11.9349 50.5624 12.3306 50.8012C13.5691 50.9562 15.4349 49.2952 16.835 48.9043C16.6119 49.7029 16.5547 49.69 15.7044 50.1269C14.5026 50.7442 12.2078 52.2011 11.0023 52.4895C10.7802 52.4022 10.845 52.4211 10.7135 52.1438C10.7049 51.5694 11.3886 50.2728 11.8505 49.9782L11.9481 50.0045Z" fill="#E1332D"/>
-<path d="M109.282 31.9147C110.685 31.575 111.426 31.0043 112.994 31.0086C115.528 31.0155 117.782 30.7436 120.198 31.6313C123.235 32.7523 124.804 33.9348 126.697 36.6117C128.713 40.0759 128.956 43.0919 128.887 47.074C128.869 48.1083 128.855 49.4603 128.65 50.4636L128.635 50.4988C128.341 51.2286 128.318 52.0176 128.052 52.7245C126.193 57.666 122.941 60.4859 117.578 60.8921C113.953 61.1668 111.999 61.1474 108.533 59.8011C106.388 58.8081 104.391 56.3526 103.271 54.3049C102.058 50.9502 101.962 50.5063 101.761 46.914C101.774 46.189 101.787 45.5388 101.744 44.8119C101.732 44.1031 101.921 42.4173 102.061 41.6898C103.077 36.431 104.3 35.1656 108.378 32.2561L109.282 31.9147ZM114.391 55.9142C116.445 55.8175 118.971 55.2674 120.35 53.6479C121.046 52.8294 121.236 52.3357 122.086 51.5556C122.04 51.1169 122.124 48.9282 122.174 48.4588C123.565 47.5177 122.345 42.1649 122.093 40.7356C120.998 34.5177 110.313 34.7839 108.599 40.251C107.682 42.1598 107.98 45.447 107.935 47.5442C107.847 51.5996 109.66 56.1007 114.391 55.9142Z" fill="#58575A"/>
-<path d="M122.086 51.5566C122.137 51.9044 121.831 53.1429 121.65 53.442C119.828 56.4627 115.809 56.7615 112.787 56.051C113.236 56.0352 113.987 56.0381 114.391 55.9153C116.445 55.8185 118.971 55.2685 120.35 53.649C121.046 52.8304 121.236 52.3367 122.086 51.5566Z" fill="#868687"/>
-<path d="M135.019 31.4479C135.119 31.4176 135.22 31.388 135.322 31.3591C137.47 30.7471 143.56 31.0779 145.959 31.261C149.393 31.5231 153.784 33.5031 154.668 37.1681C155.492 40.5852 154.863 46.1152 150.914 47.2016L149.842 48.5029L150.413 49.2925C152.848 53.0265 155.839 56.848 157.874 60.775C157.428 61.0256 153.576 60.9187 152.822 60.7665C151.596 60.5187 151.451 60.1768 150.791 59.243C150.724 58.7502 145.033 49.7899 144.484 49.261C143.455 49.2111 142.848 49.2332 141.829 49.3307C141.53 49.3358 141.399 49.3234 141.123 49.4346C140.878 50.4043 140.994 51.5387 140.94 52.5088C140.804 54.9632 141.117 58.5009 140.838 60.8234C138.976 60.7762 137.103 61.0674 135.302 60.6465C134.897 58.9687 135.002 56.5831 135.004 54.7904L135.011 48.2965C135.017 42.76 134.878 36.9563 135.019 31.4479ZM141.198 44.1792C140.923 45.2634 145.015 44.2772 145.597 44.3271C145.755 44.3406 145.905 44.3169 146.055 44.2484L145.979 44.1028C145.75 44.124 145.704 44.09 145.509 43.9726L145.454 43.9387C147.156 44.4224 147.629 43.4798 148.18 42.228C148.163 42.2704 148.614 42.0817 148.756 41.9371C149.062 41.2721 148.962 39.1141 148.954 38.2521C148.497 37.8677 148.047 37.4554 147.492 37.246C146.187 36.4952 142.671 36.4553 141.109 36.6129C140.978 38.228 140.715 42.6575 141.198 44.1792Z" fill="#58575A"/>
-<path d="M141.198 44.1798C142.079 43.8769 144.613 43.6434 145.454 43.9392L145.509 43.9732C145.704 44.0905 145.75 44.1246 145.979 44.1033L146.055 44.249C145.905 44.3175 145.755 44.3412 145.597 44.3276C145.015 44.2777 140.923 45.264 141.198 44.1798Z" fill="#B9B8BA" fill-opacity="0.988235"/>
-<path d="M69.7964 31.3674C70.3998 30.9256 74.3595 31.24 75.3723 31.1103C76.183 31.0065 77.0898 31.4363 77.4523 32.1364C80.9821 37.6419 83.9089 43.4988 87.3416 49.0632C87.8164 49.8328 88.93 52.4515 89.5809 52.9036C90.3117 51.9637 89.5187 33.815 90.0578 31.4045C90.294 30.348 94.7666 31.5392 95.2541 31.6523C95.2131 37.1957 95.3535 42.663 95.3355 48.1998C95.3326 50.0333 95.3161 51.8668 95.286 53.7C95.2735 54.6026 95.2457 56.9813 95.3585 57.8392C95.3331 58.5184 95.3278 60.1431 95.0923 60.6942L94.8445 60.8934C93.6338 60.608 88.7742 61.2502 88.0682 60.5769C85.8338 58.4462 76.0822 39.3227 75.0163 38.8026C74.8304 39.0248 74.8789 39.3484 74.8839 39.6473C74.571 42.0478 75.365 60.1501 74.7573 60.7534C74.7429 60.7677 74.7244 60.7769 74.7079 60.7887C73.9045 60.6934 71.0194 60.8293 69.946 60.8092C69.7767 58.5173 69.8503 55.5843 69.8487 53.2435L69.849 39.3554C69.8503 36.8999 69.9258 33.7828 69.7964 31.3674Z" fill="#58575A"/>
-<path d="M186.116 31.082C190.278 31.1755 194.921 31.1402 199.091 31.1118C199.865 31.1395 201.67 31.1264 202.165 31.6799C202.794 32.3812 202.043 34.8217 202.269 35.7104C202.188 35.8947 202.049 36.3179 201.891 36.3421C198.966 36.7905 194.455 36.1146 191.665 36.5772C191.406 38.456 191.306 41.114 191.668 42.9779C193.747 42.9659 195.826 42.9646 197.905 42.9743C198.615 42.9817 200.675 43.0693 201.299 43.006C201.436 43.6671 201.468 47.5091 201.174 48.0045C200.699 47.9348 199.157 47.9559 198.646 47.9544C197.008 47.9448 195.368 47.9483 193.73 47.9652C193.093 47.986 192.376 48.0266 191.745 48.0252C191.668 49.9196 191.493 52.9137 191.646 54.7659C191.691 55.1007 191.684 55.2306 191.921 55.4582C192.881 55.9805 194.831 55.6246 195.974 55.4997C197.594 55.4731 199.519 55.2726 201.136 55.4233C201.641 55.4703 201.729 55.7153 201.892 56.1378L202.322 57.3254C202.342 58.3261 202.418 59.6301 202.163 60.5832C198.707 60.5299 192.5 60.3684 189.203 60.7045C188.49 60.6348 186.613 60.9754 186.267 60.3795C186.096 60.1952 185.727 59.8848 185.528 59.7056C185.62 58.2 185.42 56.2996 185.442 54.2253C185.523 46.763 185.204 38.9557 185.547 31.497C185.558 31.2546 185.935 31.1449 186.116 31.082Z" fill="#58575A"/>
-<path d="M185.528 59.7056C185.62 58.2 185.42 56.2996 185.442 54.2253C185.523 46.763 185.204 38.9557 185.547 31.497C185.558 31.2546 185.935 31.1449 186.116 31.082C186.618 32.426 186.399 57.6122 186.267 60.3795C186.096 60.1952 185.727 59.8848 185.528 59.7056Z" fill="#B9B8BA"/>
-<path d="M160.241 31.1366C162.327 30.9796 164.711 31.0277 166.824 31.0352C170.997 31.0502 175.196 30.9598 179.363 31.108C179.994 31.1305 180.471 31.3425 181.004 31.6328C180.941 33.0484 181.036 35.3773 180.923 36.5811C179.602 36.4808 176.851 36.6025 175.387 36.607C174.697 36.5755 173.946 36.526 173.261 36.525L173.161 37.4905C172.824 38.9748 172.95 42.7466 172.95 44.507L172.931 55.4184C172.939 56.912 173.025 58.4799 172.89 59.9655C172.82 60.7491 172.389 60.8144 171.678 60.8192C170.25 60.829 168.806 60.9655 167.392 60.7066C166.881 58.5295 167.039 52.6615 167.054 50.2287L167.22 40.1389C167.246 38.9046 167.203 37.7619 167.257 36.505C166.063 36.497 160.363 36.8827 159.703 36.528C159.276 35.9372 159.262 34.5269 159.353 33.8221C159.202 32.6583 158.317 31.3693 160.073 31.0402L160.241 31.1366Z" fill="#58575A"/>
-<path d="M160.073 31.041L160.241 31.1375C160.231 31.4673 159.528 32.8392 159.353 33.8229C159.202 32.6592 158.317 31.3702 160.073 31.041Z" fill="#909090"/>
-<path d="M188.54 9.88552C188.607 9.84467 189.197 9.35761 189.339 9.2514C191.931 7.30772 193.55 7.46613 196.54 7.92746C199.806 9.7175 200.494 9.75984 201.462 13.4895C201.892 15.1468 201.718 15.1733 201.901 16.6791C201.89 16.8983 201.856 17.2659 201.9 17.465C201.494 21.8086 200.601 25.1751 195.635 25.8143C188.758 26.6994 185.387 21.4388 186.068 15.202C186.34 12.7128 187.112 11.7716 188.54 9.88552ZM198.421 12.3857C197.979 11.3161 196.943 10.5254 195.824 10.2926C189.59 9.08041 186.92 16.7626 190.014 21.222C190.675 22.1731 191.325 22.942 192.518 23.0885C199.848 24.2434 199.46 18.9369 199.035 13.5506C199.012 13.2558 198.618 12.6089 198.421 12.3857Z" fill="#58575A"/>
-<path d="M169.213 25.8153C168.937 23.5067 169.243 19.1641 169.215 16.5921C169.194 14.5709 168.979 9.74033 169.246 8.05146C169.74 7.70479 175.637 7.85746 176.415 8.03853L178.009 8.70852C180.774 10.0286 181.393 10.155 182.57 13.3491C183.31 15.3572 183.118 19.5267 182.12 21.4285C181.192 23.1947 180.339 23.9589 178.645 24.922C176.946 25.2452 175.532 25.548 173.806 25.7058C172.974 25.7818 169.659 25.7068 169.213 25.8153ZM179.374 12.9662C177.702 10.2657 175.011 10.4611 172.209 10.7323C171.975 10.869 171.871 10.874 171.823 11.1775C171.39 13.9876 171.557 16.8459 171.668 19.6738C171.711 20.777 171.885 22.0258 171.848 23.1129C174.224 23.0849 177.026 23.3167 178.782 21.4856C180.251 19.9528 180.146 18.2439 180.09 16.2667C180.052 14.9365 180.143 14.0763 179.374 12.9662Z" fill="#58575A"/>
-<path d="M97.1012 8.30474C97.8835 7.69642 98.7942 7.76319 99.7511 7.88103C100.155 7.93433 100.558 7.99913 100.959 8.07539C101.067 11.3441 100.951 14.9348 100.98 18.2241C100.992 19.5186 101.083 24.3722 100.845 25.2724C100.407 25.7263 99.853 26.1421 99.204 25.8324C98.9387 25.6086 98.937 25.4699 98.8666 25.1209C98.9062 24.5859 98.8786 23.8389 98.8336 23.3066C98.7945 21.0011 98.884 18.5989 98.8039 16.328C98.7618 15.1354 98.9867 12.6138 98.7072 11.5673C97.5064 12.1935 94.7173 21.725 94.0112 23.3398C93.6108 24.2552 93.3231 24.8395 92.759 25.7872C92.6452 25.8688 92.3779 26.0704 92.2666 26.1171C92.1501 26.0743 92.0343 26.0293 91.9194 25.9821C89.8708 25.136 89.8921 22.8562 89.2898 21.0933C88.9521 20.1046 88.457 18.9678 88.0499 17.9975C87.6445 15.1639 86.765 13.551 85.5401 10.9674C85.7732 12.5764 85.6135 13.6481 85.678 15.201C85.7649 17.2902 85.899 19.4174 86.0168 21.5077C85.9447 23.4045 86.6937 26.2148 83.9824 25.7693C83.8171 25.7421 83.648 25.5654 83.4437 25.5425C83.001 24.6445 83.195 19.9914 83.1899 18.6364C83.1752 15.0876 83.1108 11.5391 82.9966 7.99207C84.3518 7.92574 85.3477 7.81204 86.7168 7.88065C87.6808 9.50826 87.6405 10.1081 88.2604 11.6891C89.3743 14.5293 90.6847 19.1559 92.1676 21.6617C92.3682 21.1349 92.5242 20.7007 92.6844 20.161C92.8329 19.788 92.9468 19.1821 93.1272 18.8439C94.8743 15.5693 95.5951 11.6102 97.1012 8.30474Z" fill="#58575A"/>
-<path d="M120.839 7.89724C125.446 7.81651 133.179 6.9761 132.102 14.2622C132.057 14.5694 131.949 14.9185 131.866 15.2214C131.144 16.664 130.242 17.2413 128.924 18.1185C129.524 19.4531 132.009 23.0771 132.979 24.6254C133.121 26.1164 131.826 26.4479 130.885 25.4269C129.047 23.4306 128.054 20.6715 126.28 18.642C125.998 18.3219 124.809 18.3128 124.349 18.3262C124.172 18.3316 123.994 18.3397 123.818 18.3506C123.593 19.1907 123.579 19.3359 123.483 20.1631C123.337 21.4194 123.67 24.7582 123.18 25.6963C122.207 25.7771 121.886 25.8205 120.935 25.5733C120.701 23.7816 120.88 19.4903 120.812 17.396C120.851 14.7019 120.631 10.3741 120.839 7.89724ZM123.567 16.0427C125.645 16.0514 128.219 16.5159 129.4 14.5145C129.083 13.4334 129.116 12.5318 129.094 11.4173C127.932 10.4697 125.407 10.6288 123.833 10.5581C123.326 12.398 123.399 14.1569 123.567 16.0427Z" fill="#58575A"/>
-<path d="M129.094 11.418C129.853 12.1943 130.366 13.7664 129.401 14.5151C129.083 13.4341 129.116 12.5325 129.094 11.418Z" fill="#B9B8BA"/>
-<path d="M150.219 7.96391C151.008 7.83259 152.092 7.51967 152.8 8.01972C154.629 9.31129 158.991 17.814 160.63 20.2006C161.013 20.7577 161.486 21.268 161.947 21.7605C161.912 20.9275 161.893 19.9906 161.829 19.1676L161.843 12.717C161.841 11.5926 161.883 9.77702 161.782 8.69025C161.814 8.45326 161.802 8.19082 161.964 8.06508C162.303 7.80276 163.367 7.95658 163.825 7.99146C164.1 10.7094 164.14 14.0253 164.389 16.8244C164.612 19.3152 164.369 22.9876 164.054 25.4455C163.97 25.8256 162.398 25.8766 161.93 25.8897C161.862 25.8919 161.794 25.8935 161.727 25.8944C159.106 24.0229 153.776 12.384 152.625 12.0613C151.802 12.7388 152.375 14.7978 152.305 15.7409C152.117 18.2729 152.843 23.388 152.112 25.5802C151.454 25.888 150.712 25.7482 150.004 25.6679C149.801 20.0827 150.059 14.2923 149.989 8.69057C149.986 8.43182 150.055 8.16795 150.219 7.96391Z" fill="#58575A"/>
-<path d="M105.972 7.97423C107.454 7.79855 109.922 7.89496 111.433 7.96843C112.949 8.03027 114.937 8.69772 115.992 9.82609C117.033 10.9408 117.055 12.3962 117.022 13.831C116.967 16.2118 115.391 17.8106 113.275 18.6877C111.702 19.2163 110.251 18.9883 108.588 19.2589C108.117 21.4391 108.494 23.3785 108.269 25.5696C107.381 25.6463 106.903 25.6954 106.009 25.6233C105.842 23.881 105.939 20.597 105.939 18.7682C105.91 15.1701 105.921 11.572 105.972 7.97423ZM108.394 16.966C109.659 16.8742 112.083 16.3537 113.264 15.8867C114.907 14.447 114.743 12.2011 113.117 10.809C112.246 10.7504 108.884 10.5849 108.359 10.3767L108.394 16.966Z" fill="#58575A"/>
-<path d="M138.395 7.91503C140.577 7.93014 143.63 7.7888 145.736 8.00113C145.88 9.04682 145.898 9.48614 145.881 10.5198C143.724 10.7066 141.349 10.6622 139.193 10.5644C139.007 12.4544 138.997 13.5831 139.208 15.4483C140.403 15.2061 144.686 14.3874 145.401 15.9764C145.531 16.2666 145.508 17.1293 145.332 17.4363C144.541 17.9015 140.237 17.6238 139.167 17.54C139.127 18.5803 139.036 19.6683 138.986 20.7212C139.011 21.4647 139.138 22.5349 139.207 23.2985C141.329 23.121 143.811 23.0835 145.926 23.3472C145.946 24.2642 145.938 24.7753 145.785 25.682C144.776 25.8346 137.504 25.8546 136.533 25.6741C136.266 24.2971 136.411 22.0377 136.368 20.5779C136.246 16.4025 136.401 12.3198 136.183 8.14035C136.972 7.9682 137.595 7.95485 138.395 7.91503Z" fill="#58575A"/>
-<path d="M69.8909 8.00239C70.9801 7.95686 78.2296 7.79675 78.7039 8.07963C79.0372 8.27845 79.1208 8.84534 79.1948 9.19252C79.2778 9.58208 79.3597 9.96516 79.1303 10.3213C78.3764 10.8672 73.6171 10.5776 72.2938 10.6065C72.0855 12.506 72.0138 13.2899 72.4511 15.2097C73.9367 15.1178 77.4993 14.9944 78.81 15.3065C79.1406 15.7004 78.9861 17.0488 78.9627 17.6285C76.6748 17.7153 74.6477 17.6313 72.3735 17.6426L72.287 18.7457C72.1317 20.6367 72.1216 21.393 72.3148 23.2743C74.4262 23.2657 76.9492 23.1963 79.0257 23.3123C79.204 24.3046 79.1624 24.6909 78.9576 25.6813C77.2235 25.8058 75.3055 25.6638 73.5504 25.723C72.4004 25.7619 71.0744 25.7412 69.9325 25.6506C69.7703 24.0243 69.8459 20.1354 69.8586 18.3902C69.8826 15.0754 69.7504 11.2783 69.8909 8.00239Z" fill="#58575A"/>
-<path d="M201.299 43.0071L201.49 42.6779C201.393 42.5313 201.261 42.5007 201.094 42.43C201.328 42.2124 201.385 42.1401 201.697 42.1035C202.991 42.65 202.48 47.915 201.808 48.6041C200.844 48.7012 199.383 48.6585 198.384 48.6587L192.58 48.6569V54.4777C192.954 54.4815 193.235 54.4146 193.493 54.6058L193.552 54.8004C194.074 54.9887 194.42 54.7796 194.819 55.0878L194.77 55.0896C195.083 55.4119 195.53 55.4563 195.974 55.5008C194.832 55.6257 192.882 55.9816 191.921 55.4593C191.684 55.2317 191.691 55.1018 191.646 54.767C191.759 54.7077 192.005 54.5594 192.073 54.4576C192.642 53.6112 191.972 48.9212 192.299 48.4691C192.657 48.2807 193.189 48.337 193.612 48.3424C195.955 48.3443 199.276 48.4523 201.539 48.3203L201.587 48.1948C201.337 48.1273 201.343 48.167 201.174 48.0056C201.468 47.5102 201.437 43.6682 201.299 43.0071Z" fill="#909090" fill-opacity="0.0156863"/>
-<path d="M98.1802 15.6831L98.3287 15.6406C98.4043 15.9386 98.394 16.0386 98.3825 16.3483C98.3781 17.1771 98.4955 18.4696 98.5245 19.3274C98.5467 19.98 98.4111 23.0733 98.5736 23.3647C98.7624 23.3878 98.6931 23.4075 98.8335 23.3061C98.8785 23.8384 98.9061 24.5854 98.8665 25.1204C98.8248 24.9246 98.8042 24.9069 98.6526 24.7741L98.2889 24.8519C98.1702 24.2547 98.2104 22.2467 98.2125 21.5339C98.2335 19.5836 98.2227 17.633 98.1802 15.6831Z" fill="#CDCED2" fill-opacity="0.65098"/>
-<path d="M98.7072 11.5664C98.9866 12.6129 98.7617 15.1345 98.8039 16.3271L98.6529 17.0254L98.5791 17.0374L98.3826 16.348C98.3941 16.0382 98.4044 15.9383 98.3287 15.6402L98.1802 15.6827C98.1089 15.2249 98.1088 14.8725 98.1004 14.4117C98.0939 13.9275 98.1934 13.4479 98.3918 13.0062L98.5218 12.9804L98.6468 13.2806C98.7144 13.1397 98.6812 11.9295 98.7072 11.5664Z" fill="#B9B8BA" fill-opacity="0.0352941"/>
-<path d="M98.8043 16.3281C98.8843 18.599 98.7948 21.0012 98.834 23.3068C98.6935 23.4082 98.7629 23.3885 98.574 23.3654C98.4116 23.074 98.5471 19.9806 98.525 19.3281C98.4959 18.4703 98.3785 17.1777 98.3829 16.349L98.5795 17.0385L98.6532 17.0264L98.8043 16.3281Z" fill="#CDCED2" fill-opacity="0.486275"/>
-<path d="M101.224 44.377C101.46 44.4303 101.583 44.6239 101.744 44.813C101.787 45.5399 101.774 46.1901 101.762 46.9152L101.438 46.8337C101.088 46.3663 101.21 45.0007 101.224 44.377Z" fill="#909090" fill-opacity="0.811765"/>
-
-    </svg>
-    <p class="eyebrow">Encuentro 1</p>
-    <h1>¿Cómo está tu obra hoy?</h1>
-    <p>Seis preguntas cortas sobre cómo trabajás hoy: cómo organizás las tareas, cómo manejás la plata, cómo conseguís clientes. Sin vueltas, sin categoría que no uses en el día a día. Al final vas a ver tus seis edificios y el perfil que te toca.</p>
-    <button class="btn-grande" id="btnEmpezar">Empezar →</button>
-    <p class="aviso">Toma 3 minutos. No hay respuestas correctas.</p>
-  </section>
-
-  <!-- ═══════════ PREGUNTAS ═══════════ -->
-  <section class="pantalla" id="preguntas">
-    <div class="progreso-wrap">
-      <span class="progreso-num" id="progNum">1 / 6</span>
-      <div class="progreso"><i id="progBar" style="width:16.6%"></i></div>
+  <!-- PREGUNTAS -->
+  <div id="pantallaPreguntas" class="pantalla">
+    <div class="progreso-num" id="progNum">1 / 6</div>
+    <div class="progreso-bar">
+      <div class="progreso-fill" id="progBar"></div>
     </div>
-    <div class="pregunta">
-      <p class="grupo" id="pGrupo"></p>
-      <h2 id="pTitulo"></h2>
-      <div class="opciones" id="pOpciones"></div>
-    </div>
-    <div class="nav">
-      <button id="btnAtras">← Atrás</button>
-      <button id="btnSaltar" style="visibility:hidden">Saltar</button>
-    </div>
-  </section>
+    
+    <span id="pGrupo" class="grupo duro">Estructura Duro</span>
+    <h2 id="pTitulo">Título de la pregunta</h2>
+    
+    <div id="pOpciones"></div>
 
-  <!-- ═══════════ RESULTADO ═══════════ -->
-  <section class="pantalla" id="resultado">
-    <p class="eyebrow">Encuentro 1 · Tu resultado</p>
-    <h1>Así está tu obra hoy</h1>
-    <div class="escena"><svg id="viz" viewBox="0 0 1080 660" role="img" aria-label="Seis edificios, uno por área"></svg></div>
-    <div class="perfil">
-      <p class="et">Tu perfil</p><h2 id="pTit"></h2>
-      <h3>A trabajar</h3><ul id="pLista"></ul>
+    <div class="nav-btns">
+      <button id="btnAtras" class="btn btn-sec">Anterior</button>
     </div>
-    <p class="captura">Sacale una captura a esta pantalla — la vamos a volver a mirar en el último encuentro.</p>
-    <button class="rehacer" id="btnRehacer">Volver a responder</button>
-  </section>
+  </div>
 
+  <!-- RESULTADO -->
+  <div id="pantallaResultado" class="pantalla">
+    <h1>Resultado del Diagnóstico</h1>
+    <p>A continuación se visualiza el balance de tu negocio entre estructura dura y blanda:</p>
+    
+    <canvas id="cvs" width="600" height="300"></canvas>
+
+    <button id="btnRehacer" class="btn">Volver a empezar</button>
+  </div>
 </div>
 
 <script>
-const NS="http://www.w3.org/2000/svg";
-const el=(t,a={})=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);return n;};
-
-/* ══════════════════════════════════════════════════════
-   1. LAS 6 ÁREAS, CON LOS 5 NIVELES DE CADA UNA (0 a 4)
-   ══════════════════════════════════════════════════════ */
-const AREAS=[
-{k:"ope",n:"Operaciones",duro:true,opciones:[
- "Voy a donde me llaman, no tengo organización de tareas",
- "Tengo un cronograma/agenda de trabajo",
- "Tengo procesos o rutinas para las tareas repetitivas, aunque no estén escritos",
- "Tengo esos procesos documentados (pasos a seguir, checklist)",
- "Puedo escalar o tercerizar operaciones sin estar presente"]},
-{k:"cont",n:"Contabilidad",duro:true,opciones:[
- "No llevo ningún registro de ingresos/egresos",
- "Anoto ingresos y egresos de forma básica (cuaderno/planilla simple)",
- "Llevo un excel y sé cuánto necesito para cubrir gastos",
- "Calculo el costo y la rentabilidad de cada producto/servicio (sé cuánto gano por servicio)",
- "Tengo a alguien (contador/administrativo) que se encarga de esto"]},
-{k:"pres",n:"Presupuestos",duro:true,opciones:[
- "No armo ningún presupuesto",
- "Estimo gastos de manera informal/mental",
- "Tengo una planilla o herramienta de presupuesto",
- "Reviso y ajusto el presupuesto periódicamente",
- "Tengo a alguien que gestiona el presupuesto conmigo/por mí"]},
-{k:"equi",n:"Gestión de equipos",duro:false,opciones:[
- "Trabajo solo/a, no tengo equipo",
- "Tengo colaboradores ocasionales o tercerizados puntuales",
- "Tengo un equipo fijo pero sin roles definidos",
- "Tengo roles y responsabilidades definidas por persona",
- "Delego la conducción/liderazgo del equipo a otra persona"]},
-{k:"com",n:"Comercial / Ventas",duro:false,opciones:[
- "No hago ninguna acción comercial, espero que me busquen",
- "Hago acciones puntuales (promociones, publicaciones ocasionales)",
- "Generé alianzas o acuerdos con otros negocios/marcas",
- "Tengo una estrategia de marketing definida (objetivos, público, calendario)",
- "Tengo una persona/equipo a cargo del área comercial"]},
-{k:"marca",n:"Comunicación / marca",duro:false,opciones:[
- "No tengo marca definida (sin nombre/logo consistente) ni canales de contacto claros",
- "Tengo nombre y logo definidos, pero me comunico con los clientes solo por chat",
- "Tengo Instagram armado con identidad visual (logo, colores, fotos) además de WhatsApp",
- "Instagram + WhatsApp + uso un excel u otra herramienta para organizar contactos/ventas",
- "Tengo una persona a cargo de la comunicación de marca"]}
-];
-
-let RESP = new Array(AREAS.length).fill(null);
-let qi = 0;
-
-function perfil(v){
-  const prom=(...a)=>a.reduce((x,y)=>x+y,0)/a.length, t=Object.values(v);
-  if(t.every(x=>x<=1)) return {t:"Recién empezando",
-    l:["Llevar un registro básico de la plata que entra y sale",
-       "Tener un canal de contacto claro para los clientes","Armar un cronograma simple de trabajo"]};
-  if(t.every(x=>x>=3)) return {t:"Negocio consolidado",
-    l:["Evaluar si conviene crecer o sumar gente","Buscar nuevas oportunidades de trabajo"]};
-  if(v.equi<=1&&v.ope>=3&&v.cont>=2) return {t:"Solo con todo el peso",
-    l:["Sumar un ayudante o tercerizar algo","Documentar los procesos para poder enseñarlos"]};
-  if(prom(v.ope,v.cont,v.pres)>=2.5&&prom(v.com,v.marca)<=1.5) return {t:"Oficio fuerte, negocio flojo",
-    l:["Armar una marca simple","Hacer alianzas o acciones comerciales",
-       "Ordenar cómo te comunicás con los clientes"]};
-  if(prom(v.com,v.marca)>=2.5&&prom(v.cont,v.pres)<=1.5) return {t:"Vende pero no controla los costos",
-    l:["Sacar el costo real de cada trabajo","Armar un presupuesto","Anotar los ingresos y egresos"]};
-  if(prom(v.com,v.marca)>=2.5&&prom(v.pres,v.ope)<=1.5) return {t:"Con trabajo, sin orden",
-    l:["Armar un cronograma","Presupuestar cada trabajo","Ordenar los procesos"]};
-  const b=[...AREAS].sort((a,c)=>v[a.k]-v[c.k]).slice(0,2).map(a=>a.n);
-  return {t:"Perfil mixto",l:[`Empezar por ${b[0]}`,`Y después por ${b[1]}`]};
-}
-
-/* ── obrero caminante ── */
-function obrero(x,y,fase,mirar){
-  const g=el("g",{transform:`translate(${x},${y}) scale(${mirar},1)`});
-  const add=n=>g.appendChild(n);
-  const piel="#C98A5E", vest="#C6D93A", pant="#3E4E5C";
-  add(el("path",{d:"M-7 0 v-18",stroke:pant,"stroke-width":8,"stroke-linecap":"round"}));
-  add(el("path",{d:"M7 0 v-18",stroke:pant,"stroke-width":8,"stroke-linecap":"round"}));
-  add(el("rect",{x:-11,y:-44,width:22,height:28,rx:5,fill:vest}));
-  add(el("rect",{x:-11,y:-33,width:22,height:4,fill:"#fff",opacity:".85"}));
-  add(el("rect",{x:-4,y:-44,width:3,height:28,fill:"#fff",opacity:".6"}));
-  add(el("circle",{cx:0,cy:-51,r:7.5,fill:piel}));
-  add(el("path",{d:"M-9 -53 a9 9 0 0 1 18 0 z",fill:"#F2B441"}));
-  add(el("rect",{x:-11,y:-54,width:22,height:3,rx:1.5,fill:"#D99B2C"}));
-  const balde=Math.cos(fase*Math.PI*2)*6;
-  add(el("path",{d:`M9 -40 L${17+balde*.4} ${-48-Math.abs(balde)*.3}`,
-    stroke:piel,"stroke-width":6,"stroke-linecap":"round"}));
-  add(el("path",{d:`M-9 -40 L${-17-balde*.4} ${-33+Math.abs(balde)*.2}`,
-    stroke:piel,"stroke-width":6,"stroke-linecap":"round"}));
-  add(el("path",{d:`M${16+balde*.4} ${-40-Math.abs(balde)*.3} v9`,stroke:"#5A6470","stroke-width":1.6}));
-  add(el("path",{d:`M${9+balde*.4} ${-30-Math.abs(balde)*.3} h14 l-2 12 h-10 z`,fill:"#8E97A2"}));
-  return g;
-}
-
-/* ── ventana con 4 estados de terminación ── */
-function ventanita(x,y,w,h,estado){
-  const g=el("g"); const add=n=>g.appendChild(n);
-  add(el("rect",{x,y,width:w,height:h,fill:"#2C2A28"}));
-  if(estado==="tapiada"){
-    const tabla=(x1,y1,x2,y2)=>el("line",{x1,y1,x2,y2,stroke:"#8A7048",
-      "stroke-width":Math.max(5,h*0.13),"stroke-linecap":"square"});
-    add(tabla(x-3,y+h*0.22,x+w+3,y+h*0.42));
-    add(tabla(x-3,y+h*0.78,x+w+3,y+h*0.58));
-    add(el("rect",{x:x-4,y:y-4,width:w+8,height:h+8,fill:"none",stroke:"#6E6A62","stroke-width":4}));
-    return g;
-  }
-  const marco = estado==="hecha" ? "#F0EBE0" : estado==="limpia" ? "#B0ACA3" : "#8C8880";
-  add(el("rect",{x:x-4,y:y-4,width:w+8,height:h+8,fill:"none",stroke:marco,"stroke-width":5}));
-  if(estado==="sucia"){
-    add(el("rect",{x,y,width:w,height:h,fill:"url(#gVidrioT)"}));
-    add(el("rect",{x,y,width:w,height:h,fill:"#5A4B36",opacity:".35"}));
-    add(el("path",{d:`M${x+w*0.2} ${y} L${x+w*0.55} ${y+h*0.5} L${x+w*0.35} ${y+h}`,
-      fill:"none",stroke:"#2B3740","stroke-width":2}));
-  } else if(estado==="limpia"){
-    add(el("rect",{x,y,width:w,height:h,fill:"url(#gVidrioT)"}));
-    add(el("path",{d:`M${x+w*0.1} ${y+h} L${x+w*0.5} ${y} L${x+w*0.68} ${y} L${x+w*0.28} ${y+h} Z`,
-      fill:"#FFF",opacity:".12"}));
-  } else {
-    add(el("rect",{x,y,width:w,height:h,fill:"#FFD07A"}));
-    add(el("path",{d:`M${x} ${y} h${w} v${h*.16} q${-w*.24} ${h*.14} ${-w*.5} 0 q${-w*.26} ${-h*.14} ${-w*.5} 0 z`,fill:"#E8DCC4"}));
-  }
-  add(el("rect",{x:x+w/2-2.5,y,width:5,height:h,fill:marco}));
-  add(el("rect",{x,y:y+h/2-2.5,width:w,height:5,fill:marco}));
-  return g;
-}
-
-/* ── geometría de la escena de resultado ── */
-const FH=88, TW=122, GAP=36, N=6;
-const ANCHO_TOTAL=N*TW+(N-1)*GAP, X0=(1080-ANCHO_TOTAL)/2, SUELO=576;
-const xTorre=i=>X0+i*(TW+GAP);
-const svg=document.getElementById("viz");
-
-const ESTADOS = {
-  1:["tapiada","tapiada"], 2:["ladrillo","sucia"], 3:["revoque","limpia"], 4:["pintura","hecha"]
-};
-
-function edificio(xL, nivel, area){
-  const g=el("g"); const add=n=>g.appendChild(n);
-  const colW=9, innerW=TW-colW*2;
-  add(el("rect",{x:xL-6,y:SUELO-14,width:TW+12,height:14,fill:"#9A968E"}));
-  add(el("rect",{x:xL-6,y:SUELO-14,width:TW+12,height:4,fill:"#B0ACA3"}));
-  if(nivel===0){
-    const h=el("g",{stroke:"#8C8880","stroke-width":3,"stroke-linecap":"round"});
-    [0.18,0.42,0.66,0.9].forEach((f,k)=>h.appendChild(
-      el("path",{d:`M${xL+innerW*f+colW} ${SUELO-14} v-${14+(k%2)*8}`})));
-    add(h);
-  }
-  const [pared, vent] = ESTADOS[nivel] || ["",""];
-  const tonoCol = nivel<=2 ? "#8C8880" : nivel===3 ? "#B0ACA3" : "#F0EBE0";
-  for(let piso=1; piso<=4; piso++){
-    const y0=SUELO-14-piso*FH, y1=y0+FH;
-    if(piso>nivel){
-      const f=el("g",{opacity:".34"});
-      f.appendChild(el("rect",{x:xL,y:y0,width:colW,height:FH,fill:"none",
-        stroke:"#7E8A94","stroke-width":2,"stroke-dasharray":"5 5"}));
-      f.appendChild(el("rect",{x:xL+TW-colW,y:y0,width:colW,height:FH,fill:"none",
-        stroke:"#7E8A94","stroke-width":2,"stroke-dasharray":"5 5"}));
-      f.appendChild(el("rect",{x:xL,y:y0,width:TW,height:8,fill:"#7E8A94",opacity:".5"}));
-      add(f); continue;
+  const AREAS = [
+    {
+      k: "finanzas",
+      n: "¿Cómo gestionás las finanzas y costos de tu proyecto?",
+      duro: true,
+      opciones: [
+        "Sin registro formal de ingresos y egresos.",
+        "Planillas básicas, con control ocasional.",
+        "Presupuestos y métricas claras revisadas periódicamente."
+      ]
+    },
+    {
+      k: "procesos",
+      n: "¿Tus procesos operativos están estandarizados?",
+      duro: true,
+      opciones: [
+        "Cada tarea se resuelve de forma improvisada.",
+        "Hay guías o flujos informales conocidos por el equipo.",
+        "Manuales de procesos documentados y optimizados."
+      ]
+    },
+    {
+      k: "herramientas",
+      n: "¿Qué nivel de automatización/digitalización usás?",
+      duro: true,
+      opciones: [
+        "Procesos 100% manuales.",
+        "Uso de herramientas digitales sin integración entre sí.",
+        "Sistemas integrados y automatizaciones implementadas."
+      ]
+    },
+    {
+      k: "identidad",
+      n: "¿Qué tan definida está la identidad y el concepto de marca?",
+      duro: false,
+      opciones: [
+        "Solo un logo/nombre inicial sin narrativa clara.",
+        "Universo visual definido pero aplicación inconsistente.",
+        "Identidad, valores y propuesta de valor completamente consolidados."
+      ]
+    },
+    {
+      k: "comunicacion",
+      n: "¿Cómo definís la estrategia de contenidos y comunicación?",
+      duro: false,
+      opciones: [
+        "Publicaciones esporádicas sin plan previo.",
+        "Calendario básico sin medir conversión ni tono.",
+        "Estrategia omnicanal alineada a los objetivos de marca."
+      ]
+    },
+    {
+      k: "cultura",
+      n: "¿Cómo priorizás la experiencia del cliente y del equipo?",
+      duro: false,
+      opciones: [
+        "Enfoque exclusivo en la transacción rápida.",
+        "Atención cuidada pero sin canales formales de feedback.",
+        "Comunidad activa y medición constante de satisfacción."
+      ]
     }
-    if(pared==="tapiada") add(el("rect",{x:xL+colW,y:y0,width:innerW,height:FH,fill:"#7C7870"}));
-    else if(pared==="ladrillo") add(el("rect",{x:xL+colW,y:y0,width:innerW,height:FH,fill:"url(#pLadrilloT)"}));
-    else if(pared==="revoque") add(el("rect",{x:xL+colW,y:y0,width:innerW,height:FH,fill:"#B8B2A4",filter:"url(#granoT)"}));
-    else add(el("rect",{x:xL+colW,y:y0,width:innerW,height:FH,fill:"#EFE6D2",filter:"url(#granoT)"}));
-    add(el("rect",{x:xL,y:y0,width:colW,height:FH,fill:tonoCol}));
-    add(el("rect",{x:xL+TW-colW,y:y0,width:colW,height:FH,fill:tonoCol}));
-    add(el("rect",{x:xL,y:y1-6,width:TW,height:6,fill: nivel===4?"#F0EBE0":"#9A968E"}));
-    const vw=innerW*0.56, vh=FH*0.5, vx=xL+(TW-vw)/2, vy=y0+FH*0.28;
-    add(ventanita(vx,vy,vw,vh, vent));
-    if(vent==="hecha"){
-      add(el("rect",{x:vx+6,y:vy+vh+3,width:vw-12,height:8,rx:2,fill:"#8C4B33"}));
-      add(el("circle",{cx:vx+vw*0.3,cy:vy+vh,r:5,fill:"#5E8F55"}));
-      add(el("circle",{cx:vx+vw*0.7,cy:vy+vh,r:5,fill:"#4E7C4A"}));
-    }
-  }
-  const yTope = nivel===0 ? SUELO-14 : SUELO-14-nivel*FH;
-  if(nivel>0) add(el("rect",{x:xL-4,y:yTope-6,width:TW+8,height:6,fill:tonoCol}));
-  const base = area.duro ? "#a85c3f" : "#6e7350";
-  add(el("path",{d:`M${xL+TW/2} ${yTope-4} v-40`,stroke:"#4A3A2C","stroke-width":3,"stroke-linecap":"round"}));
-  add(el("path",{d:`M${xL+TW/2+1} ${yTope-44} h32 l-8 11 l8 11 h-32 z`,fill:base}));
-  const num=el("text",{x:xL+TW/2+15,y:yTope-27,"text-anchor":"middle",
-    "font-family":"Archivo Black, sans-serif","font-size":14,fill:"#fff"});
-  num.textContent=nivel; add(num);
-  add(el("rect",{x:xL+TW/2-46,y:SUELO+8,width:92,height:22,rx:2,fill:"#3A2E22"}));
-  const lb=el("text",{x:xL+TW/2,y:SUELO+23,"text-anchor":"middle","font-size":11.5,
-    "font-weight":600,fill:"#F4EBE0","font-family":"IBM Plex Sans, sans-serif"});
-  lb.textContent=area.corto||area.n; add(lb);
-  return {g};
-}
+  ];
 
-function dibujarEscena(NIV){
-  svg.textContent="";
-  const defs=el("defs");
-  defs.innerHTML=`
-    <linearGradient id="gCieloT" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#5793C6"/><stop offset="52%" stop-color="#95C2DD"/>
-      <stop offset="100%" stop-color="#D2E1E3"/></linearGradient>
-    <pattern id="pLadrilloT" width="42" height="21" patternUnits="userSpaceOnUse">
-      <rect width="42" height="21" fill="#9B5238"/>
-      <rect x="0" y="1" width="39" height="9" fill="#A85C3F"/>
-      <rect x="21" y="12" width="39" height="9" fill="#A85C3F"/>
-      <rect x="-21" y="12" width="39" height="9" fill="#A85C3F"/></pattern>
-    <filter id="granoT"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" result="n"/>
-      <feColorMatrix in="n" type="saturate" values="0"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.09"/></feComponentTransfer>
-      <feComposite in2="SourceGraphic" operator="atop"/></filter>
-    <linearGradient id="gVidrioT" x1="0" y1="0" x2="0.3" y2="1">
-      <stop offset="0%" stop-color="#BBD9EC"/><stop offset="55%" stop-color="#7FA7C4"/>
-      <stop offset="100%" stop-color="#6E8FA8"/></linearGradient>`;
-  svg.appendChild(defs);
-
-  svg.appendChild(el("rect",{x:0,y:0,width:1080,height:660,fill:"url(#gCieloT)"}));
-  const nube=(cx,cy,e,o)=>{
-    const n=el("g",{transform:`translate(${cx},${cy}) scale(${e})`,opacity:o});
-    [[-46,6,22],[-18,-10,30],[12,-15,33],[42,-2,26],[66,8,19]]
-      .forEach(([x,y,r])=>n.appendChild(el("circle",{cx:x,cy:y,r,fill:"#fff"})));
-    svg.appendChild(n);
+  const pantallas = {
+    intro: document.getElementById("pantallaIntro"),
+    preguntas: document.getElementById("pantallaPreguntas"),
+    resultado: document.getElementById("pantallaResultado")
   };
-  nube(140,74,1.05,.95); nube(560,48,.8,.85); nube(940,112,.92,.9); nube(340,140,.6,.5);
 
-  const tel=el("g");
-  tel.appendChild(el("path",{d:"M0 118 L1080 46",stroke:"#3D4C58","stroke-width":2.2}));
-  tel.appendChild(el("path",{d:"M0 130 L1080 58",stroke:"#3D4C58","stroke-width":1.2,opacity:".55"}));
-  const cab=el("g",{class:"cabinaTel"});
-  cab.appendChild(el("path",{d:"M0 0 v17",stroke:"#3D4C58","stroke-width":3}));
-  cab.appendChild(el("path",{d:"M-3 15 h23 v5 h-23 z",fill:"#4A5A66"}));
-  cab.appendChild(el("rect",{x:-12,y:20,width:40,height:34,rx:6,fill:"#C9622E"}));
-  cab.appendChild(el("rect",{x:-8,y:24,width:32,height:17,rx:4,fill:"#6E5A4E",opacity:".85"}));
-  cab.appendChild(el("rect",{x:-12,y:20,width:40,height:5,rx:2.5,fill:"#5A6874"}));
-  tel.appendChild(cab);
-  svg.appendChild(tel);
+  let qi = 0;
+  const RESP = new Array(AREAS.length).fill(null);
+  let caminataActiva = false;
+  let lastTs = null;
 
-  svg.appendChild(el("path",{fill:"#8996A6",d:
-    "M0 340 L100 288 L184 322 L280 268 L376 320 L472 274 L568 322 L664 272 L760 320 L856 278 L952 322 L1080 292 L1080 430 L0 430 Z"}));
-  svg.appendChild(el("path",{fill:"#7C7268",d:
-    "M0 384 L130 344 L260 380 L390 340 L520 382 L650 338 L780 378 L910 342 L1080 374 L1080 480 L0 480 Z"}));
-  svg.appendChild(el("path",{fill:"#A66A48",d:
-    "M0 452 Q180 424 360 448 Q540 472 720 444 Q900 418 1080 446 L1080 520 L0 520 Z"}));
+  function dibujarEscena(resObj) {
+    const canvas = document.getElementById("cvs");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  svg.appendChild(el("rect",{x:0,y:SUELO,width:1080,height:20,fill:"#CFC5B2"}));
-  svg.appendChild(el("rect",{x:0,y:SUELO+18,width:1080,height:4,fill:"#A79C88"}));
-  svg.appendChild(el("rect",{x:0,y:SUELO+22,width:1080,height:96,fill:"#5E6167"}));
-  for(let x=10;x<1080;x+=70)
-    svg.appendChild(el("rect",{x,y:SUELO+52,width:38,height:5,rx:2.5,fill:"#D8CFA8",opacity:".8"}));
+    ctx.fillStyle = "#FAF8F5";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  const l1=el("text",{x:xTorre(1)+TW/2,y:34,"text-anchor":"middle","font-size":11,
-    "font-weight":600,"letter-spacing":"0.16em",fill:"#D9A98C"});
-  l1.textContent="LO QUE HACÉS"; svg.appendChild(l1);
-  const l2=el("text",{x:xTorre(4)+TW/2,y:34,"text-anchor":"middle","font-size":11,
-    "font-weight":600,"letter-spacing":"0.16em",fill:"#B7BE96"});
-  l2.textContent="CÓMO LO MOSTRÁS"; svg.appendChild(l2);
+    const keys = Object.keys(resObj);
+    const barWidth = 60;
+    const gap = 30;
+    const startX = (canvas.width - (keys.length * (barWidth + gap) - gap)) / 2;
 
-  AREAS.forEach((a,i)=>{
-    const xL=xTorre(i);
-    svg.appendChild(edificio(xL, NIV[a.k], a).g);
-  });
+    keys.forEach((k, idx) => {
+      const val = resObj[k];
+      const h = (val + 1) * 60;
+      const x = startX + idx * (barWidth + gap);
+      const y = canvas.height - h - 40;
 
-  const p=perfil(NIV);
-  document.getElementById("pTit").textContent=p.t;
-  document.getElementById("pLista").innerHTML=p.l.map(x=>`<li>${x}</li>`).join("");
-}
+      const areaInfo = AREAS.find(a => a.k === k);
+      ctx.fillStyle = areaInfo.duro ? "#4A6B82" : "#C17B4E";
+      ctx.fillRect(x, y, barWidth, h);
 
-/* ── obrero caminando por la calle, arranca cuando se ve el resultado ── */
-let walkerNode=null, walkT=0, walkDir=1, lastTs=null, caminataActiva=false;
-const SIN_MOVIMIENTO = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const CALLE_IZQ=X0-46, CALLE_DER=X0+ANCHO_TOTAL+46, CALLE_Y=SUELO+2;
-function animarCaminante(ts){
-  if(!caminataActiva) return;
-  if(SIN_MOVIMIENTO){
-    if(!walkerNode) svg.appendChild(walkerNode=obrero((CALLE_IZQ+CALLE_DER)/2,CALLE_Y,0,1));
-    return;
+      ctx.fillStyle = "#2C2C2C";
+      ctx.font = "12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(k, x + barWidth / 2, canvas.height - 20);
+    });
   }
-  if(lastTs===null) lastTs=ts;
-  const dt=(ts-lastTs)/1000; lastTs=ts;
-  walkT += walkDir*.055*dt;
-  if(walkT>=1){walkT=1; walkDir=-1;}
-  if(walkT<=0){walkT=0; walkDir=1;}
-  const x = CALLE_IZQ + (CALLE_DER-CALLE_IZQ)*walkT;
-  const fase=(ts/280)%1;
-  if(walkerNode) walkerNode.remove();
-  walkerNode=obrero(x,CALLE_Y,fase,walkDir);
-  svg.appendChild(walkerNode);
-  requestAnimationFrame(animarCaminante);
-}
 
-/* ══════════════════════════════════════════════════════
-   2. EL FORMULARIO: intro → 6 preguntas → resultado
-   ══════════════════════════════════════════════════════ */
-const pantallas={intro:document.getElementById("intro"),
-  preguntas:document.getElementById("preguntas"), resultado:document.getElementById("resultado")};
-function mostrar(nombre){
-  Object.values(pantallas).forEach(p=>p.classList.remove("on"));
-  pantallas[nombre].classList.add("on");
-}
+  function animarCaminante(ts) {
+    if (!caminataActiva) return;
+    if (!lastTs) lastTs = ts;
+    requestAnimationFrame(animarCaminante);
+  }
 
-function pintarPregunta(){
-  const a=AREAS[qi];
-  document.getElementById("progNum").textContent=`${qi+1} / ${AREAS.length}`;
-  document.getElementById("progBar").style.width=((qi+1)/AREAS.length*100)+"%";
-  const grupo=document.getElementById("pGrupo");
-  grupo.textContent = a.duro ? "Lo que hacés" : "Cómo lo mostrás";
-  grupo.className = "grupo " + (a.duro?"duro":"blando");
-  document.getElementById("pTitulo").textContent = a.n;
-  const cont=document.getElementById("pOpciones");
-  cont.innerHTML="";
-  a.opciones.forEach((texto,nivel)=>{
-    const b=document.createElement("button");
-    b.className="opcion"; b.type="button";
-    b.innerHTML=`<span class="bola">${RESP[qi]===nivel?"✓":""}</span><span>${texto}</span>`;
-    b.addEventListener("click",()=>{ RESP[qi]=nivel; avanzar(); });
-    cont.appendChild(b);
-  });
-  document.getElementById("btnAtras").disabled = qi===0;
-}
+  function mostrar(nombre){
+    Object.values(pantallas).forEach(p=>p.classList.remove("on"));
+    pantallas[nombre].classList.add("on");
+    window.scrollTo({top:0, behavior:'smooth'});
 
-function avanzar(){
-  if(qi < AREAS.length-1){ qi++; pintarPregunta(); }
-  else terminar();
-}
-function terminar(){
-  const NIV={};
-  AREAS.forEach((a,i)=>NIV[a.k]=RESP[i]);
-  mostrar("resultado");
-  dibujarEscena(NIV);
-  caminataActiva=true; lastTs=null;
-  requestAnimationFrame(animarCaminante);
-}
+    if(nombre === "resultado"){
+      const resObj = {};
+      AREAS.forEach((a, idx) => { resObj[a.k] = RESP[idx] ?? 0; });
+      dibujarEscena(resObj);
+      caminataActiva = true;
+      lastTs = null;
+      requestAnimationFrame(animarCaminante);
+    } else {
+      caminataActiva = false;
+    }
+  }
 
-document.getElementById("btnEmpezar").addEventListener("click",()=>{
-  qi=0; mostrar("preguntas"); pintarPregunta();
-});
-document.getElementById("btnAtras").addEventListener("click",()=>{
-  if(qi>0){ qi--; pintarPregunta(); }
-});
-document.getElementById("btnRehacer").addEventListener("click",()=>{
-  RESP=new Array(AREAS.length).fill(null); qi=0; caminataActiva=false;
-  mostrar("preguntas"); pintarPregunta();
-});
+  function renderPregunta(){
+    const a = AREAS[qi];
+    document.getElementById("progNum").textContent = `${qi + 1} / ${AREAS.length}`;
+    document.getElementById("progBar").style.width = `${((qi + 1) / AREAS.length) * 100}%`;
+    
+    const elGrupo = document.getElementById("pGrupo");
+    elGrupo.textContent = a.duro ? "Estructura Duro" : "Estructura Blando";
+    elGrupo.className = `grupo ${a.duro ? "duro" : "blando"}`;
+    
+    document.getElementById("pTitulo").textContent = a.n;
+    
+    const contOpciones = document.getElementById("pOpciones");
+    contOpciones.innerHTML = "";
+    
+    a.opciones.forEach((txt, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "opcion";
+      btn.innerHTML = `<span class="bola">${idx + 1}</span><span>${txt}</span>`;
+      btn.onclick = () => {
+        RESP[qi] = idx;
+        if(qi < AREAS.length - 1){
+          qi++;
+          renderPregunta();
+        } else {
+          mostrar("resultado");
+        }
+      };
+      contOpciones.appendChild(btn);
+    });
+
+    document.getElementById("btnAtras").disabled = (qi === 0);
+  }
+
+  document.getElementById("btnEmpezar").onclick = () => {
+    qi = 0;
+    RESP.fill(null);
+    mostrar("preguntas");
+    renderPregunta();
+  };
+
+  document.getElementById("btnAtras").onclick = () => {
+    if(qi > 0){
+      qi--;
+      renderPregunta();
+    }
+  };
+
+  document.getElementById("btnRehacer").onclick = () => {
+    mostrar("intro");
+  };
 </script>
 </body>
 </html>
